@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blood Bank Training Framework</title>
+<style>
+  :root{
+    --blue:#2563eb; --blue-soft:#eff6ff; --blue-mid:#bfdbfe;
+    --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+    --green:#16a34a; --green-bg:#f0fdf4; --red:#dc2626; --red-bg:#fef2f2;
+    --amber-bg:#fffbeb; --amber:#b45309;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Segoe UI", Arial, sans-serif; background:#ffffff; color:var(--ink);
+    line-height:1.55; font-size:15px;
+  }
+  header{
+    background:var(--blue); color:#fff; padding:26px 24px;
+  }
+  header .wrap{max-width:1000px; margin:0 auto;}
+  header h1{font-size:24px; font-weight:600;}
+  header p{color:#dbeafe; margin-top:4px; font-size:14px;}
+  .badge{display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.35);
+    padding:2px 10px; border-radius:999px; font-size:12px; margin-top:10px;}
+  main{max-width:1000px; margin:0 auto; padding:24px;}
+  section{margin-bottom:40px;}
+  .stage-head{display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--blue-mid); padding-bottom:8px; margin-bottom:6px;}
+  .stage-num{background:var(--blue-soft); color:var(--blue); border:1px solid var(--blue-mid);
+    font-weight:700; padding:2px 10px; border-radius:6px; font-size:13px; white-space:nowrap;}
+  h2{font-size:19px; font-weight:600;}
+  .purpose{color:var(--muted); font-size:14px; margin-bottom:16px;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px;
+    box-shadow:0 1px 3px rgba(15,23,42,.05); margin-bottom:14px;
+  }
+  .card h3{font-size:15px; font-weight:600; margin-bottom:4px;}
+  .card .sub{color:var(--muted); font-size:13px;}
+  /* scenario cards */
+  .scenarios{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-bottom:18px;}
+  .scenario{
+    border:1px solid var(--line); border-radius:10px; padding:14px; cursor:pointer;
+    background:#fff; text-align:left; font:inherit; transition:border-color .15s, box-shadow .15s;
+    display:block; width:100%;
+  }
+  .scenario:hover{border-color:var(--blue); box-shadow:0 2px 6px rgba(37,99,235,.12);}
+  .scenario.selected{border-color:var(--blue); background:var(--blue-soft);}
+  .scenario .tag{display:inline-block; background:var(--blue-soft); color:var(--blue); font-size:11px;
+    font-weight:600; padding:1px 8px; border-radius:999px; border:1px solid var(--blue-mid); margin-bottom:8px;}
+  .scenario h4{font-size:14px; margin-bottom:4px;}
+  .scenario p{font-size:13px; color:var(--muted);}
+  .scenario .q{margin-top:8px; font-size:13px; color:var(--ink); font-weight:500;}
+  /* steps */
+  .steps{display:flex; flex-direction:column; gap:0;}
+  .step-row{display:flex; gap:12px; position:relative; padding-bottom:18px;}
+  .step-row:not(:last-child)::before{
+    content:""; position:absolute; left:17px; top:38px; bottom:0; width:2px; background:var(--line);
+  }
+  .step-btn{
+    flex-shrink:0; width:36px; height:36px; border-radius:50%; border:2px solid var(--blue-mid);
+    background:#fff; color:var(--blue); font-weight:700; cursor:pointer; font-size:14px;
+    transition:background .15s, color .15s;
+  }
+  .step-btn:hover{background:var(--blue-soft);}
+  .step-btn.active{background:var(--blue); border-color:var(--blue); color:#fff;}
+  .step-btn.done{background:var(--green-bg); border-color:var(--green); color:var(--green);}
+  .step-body{flex:1;}
+  .step-title{font-weight:600; font-size:14px; padding-top:7px;}
+  .step-result{
+    margin-top:8px; background:var(--blue-soft); border:1px solid var(--blue-mid);
+    border-radius:8px; padding:10px 12px; font-size:13.5px;
+  }
+  .step-result.locked{color:var(--muted); font-style:italic; background:#f8fafc; border-color:var(--line);}
+  /* choices */
+  .choices{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+  .choice{
+    border:1px solid var(--line); background:#fff; border-radius:8px; padding:8px 14px;
+    cursor:pointer; font:inherit; font-size:13.5px; transition:border-color .15s, background .15s;
+  }
+  .choice:hover:not(:disabled){border-color:var(--blue); background:var(--blue-soft);}
+  .choice:disabled{cursor:default; opacity:.75;}
+  .choice.correct{background:var(--green-bg); border-color:var(--green); color:var(--green); font-weight:600; opacity:1;}
+  .choice.wrong{background:var(--red-bg); border-color:var(--red); color:var(--red); opacity:1;}
+  .feedback{margin-top:10px; border-radius:8px; padding:10px 12px; font-size:13.5px; display:none;}
+  .feedback.show{display:block;}
+  .feedback.ok{background:var(--green-bg); border:1px solid #bbf7d0; color:var(--green); font-weight:600;}
+  .feedback.no{background:var(--red-bg); border:1px solid #fecaca; color:var(--red); font-weight:600;}
+  .feedback.info{background:var(--amber-bg); border:1px solid #fde68a; color:var(--amber);}
+  footer{max-width:1000px; margin:0 auto; padding:0 24px 30px; color:var(--muted); font-size:12px;}
+  .note{font-size:12px; color:var(--muted); margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Blood Bank Training Framework</h1>
+    <p>Simulated blood bank workflows for biomedical science students — procurement, processing, and transfusion testing.</p>
+    <span class="badge">Training simulation only — all data is fictional sample data</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ======== SCENARIO CARDS ======== -->
+  <section id="scenarios-section">
+    <div class="stage-head">
+      <span class="stage-num">Scenarios</span>
+      <h2>Malaysia Training Scenarios</h2>
+    </div>
+    <p class="purpose">Pick a scenario card to get a short practice question with instant feedback. Fictional cases written for classroom use.</p>
+    <div class="scenarios" id="scenarioList"></div>
+  </section>
+
+  <!-- ======== STAGE 1 ======== -->
+  <section id="stage1">
+    <div class="stage-head">
+      <span class="stage-num">Stage 1</span>
+      <h2>Blood Procurement</h2>
+    </div>
+    <p class="purpose">Practice the first steps of blood collection, from donor registration to mock collection. Click each numbered step to reveal what happens at that point in the workflow.</p>
+
+    <div class="card">
+      <h3>Workflow practice</h3>
+      <div class="steps" id="steps1">
+        <div class="step-row">
+          <button class="step-btn" data-step="0">1</button>
+          <div class="step-body">
+            <div class="step-title">Donor registration</div>
+            <div class="step-result locked">Click the step to see the instruction.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <button class="step-btn" data-step="1">2</button>
+          <div class="step-body">
+            <div class="step-title">Eligibility screening</div>
+            <div class="step-result locked">Click the step to see the instruction.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <button class="step-btn" data-step="2">3</button>
+          <div class="step-body">
+            <div class="step-title">Mock collection</div>
+            <div class="step-result locked">Click the step to see the instruction.</div>
+          </div>
+        </div>
+      </div>
+      <p class="note">Steps must be completed in order, just like in a real donor session.</p>
+    </div>
+  </section>
+
+  <!-- ======== STAGE 2 ======== -->
+  <section id="stage2">
+    <div class="stage-head">
+      <span class="stage-num">Stage 2</span>
+      <h2>Blood Component Processing</h2>
+    </div>
+    <p class="purpose">Practice how a collected unit is prepared for storage and use. Review the sample unit below and choose the correct processing step at each checkpoint.</p>
+
+    <div class="card">
+      <h3>Sample unit under review</h3>
+      <p class="sub">Unit ref: <strong>TRAIN-MY-0001</strong> (fictional) · Whole blood · 450 mL + anticoagulant · Collected 6 hours ago · Mock donor: "Ahmad, 27, first-time donor"</p>
+    </div>
+
+    <div class="card">
+      <h3>Checkpoint A — Component preparation</h3>
+      <p class="sub">What is the first processing action for this whole blood unit?</p>
+      <div class="choices" data-quiz="A">
+        <button class="choice" data-ok="0">Centrifuge the unit to separate red cells, plasma and buffy coat</button>
+        <button class="choice" data-ok="1">Freeze the whole unit immediately at −30 °C</button>
+        <button class="choice" data-ok="2">Issue the whole unit directly to the ward</button>
+      </div>
+      <div class="feedback" id="fb-A"></div>
+    </div>
+
+    <div class="card">
+      <h3>Checkpoint B — Labelling</h3>
+      <p class="sub">A red cell component has been separated. What must the label confirm before storage?</p>
+      <div class="choices" data-quiz="B">
+        <button class="choice" data-ok="1">Donor ID, ABO/Rh group, expiry date and component type</button>
+        <button class="choice" data-ok="0">The ward's name and the requesting doctor's initials only</button>
+        <button class="choice" data-ok="2">The storage temperature, but the group can be added later by the ward</button>
+      </div>
+      <div class="feedback" id="fb-B"></div>
+    </div>
+
+    <div class="card">
+      <h3>Checkpoint C — Storage &amp; inventory notes</h3>
+      <p class="sub">Where should red cells and fresh plasma from this unit be stored, and what must the inventory record show?</p>
+      <div class="choices" data-quiz="C">
+        <button class="choice" data-ok="2">Red cells at 2–6 °C, plasma frozen; inventory logs unit ID, group and expiry</button>
+        <button class="choice" data-ok="0">Both stored at room temperature, inventory list updated at end of month</button>
+        <button class="choice" data-ok="1">Both frozen at −30 °C; inventory only records the plasma</button>
+      </div>
+      <div class="feedback" id="fb-C"></div>
+    </div>
+  </section>
+
+  <!-- ======== STAGE 3 ======== -->
+  <section id="stage3">
+    <div class="stage-head">
+      <span class="stage-num">Stage 3</span>
+      <h2>Clinical Transfusion Laboratory</h2>
+    </div>
+    <p class="purpose">Practice the lab checks done before a transfusion. Match the specimen below to the correct testing and component choice.</p>
+
+    <div class="card">
+      <h3>Specimen reception &amp; verification</h3>
+      <p class="sub">Request received (fictional): Ward 4B, mock patient "Raj, 54" · Sample tube labelled "Raj, Ward 4B, bed 12" · Request: 2 units red cells.</p>
+      <div class="choices" data-quiz="D">
+        <button class="choice" data-ok="0">Check sample label against the request form, then verify patient details and sample integrity</button>
+        <button class="choice" data-ok="1">Start compatibility testing straight away; label checks can happen during crossmatch</button>
+        <button class="choice" data-ok="2">Reject the sample because bed numbers are never allowed on labels</button>
+      </div>
+      <div class="feedback" id="fb-D"></div>
+    </div>
+
+    <div class="card">
+      <h3>Compatibility testing</h3>
+      <p class="sub">Verification passed. The patient's mock group is A RhD-positive. Which test confirms compatibility before issue?</p>
+      <div class="choices" data-quiz="E">
+        <button class="choice" data-ok="1">ABO/Rh confirm and antibody screen on the patient, then crossmatch patient serum against donor red cells</button>
+        <button class="choice" data-ok="0">Crossmatch only — repeating the group is unnecessary for a known patient</button>
+        <button class="choice" data-ok="2">Group the donor units only; patient testing is done on the ward after transfusion</button>
+      </div>
+      <div class="feedback" id="fb-E"></div>
+    </div>
+
+    <div class="card">
+      <h3>Component selection</h3>
+      <p class="sub">Crossmatch is compatible. Which component set should be selected and issued for this A RhD-positive patient?</p>
+      <div class="choices" data-quiz="F">
+        <button class="choice" data-ok="0">2 units of A RhD-positive red cells, with the final ID check at the bedside</button>
+        <button class="choice" data-ok="1">2 units of O RhD-negative red cells chosen at random from the fridge</button>
+        <button class="choice" data-ok="2">2 units of AB plasma, since plasma is a safer default for all patients</button>
+      </div>
+      <div class="feedback" id="fb-F"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Blood Bank Training Framework — educational simulation. All names, hospitals, unit references and results are fictional sample data for practice only.
+</footer>
+
+<script>
+/* ---------- Feature 2: Scenario cards (always visible on open) ---------- */
+const scenarios = [
+  {
+    tag: "Scenario 1 · Kuala Lumpur",
+    title: "First-time donor at Hospital Kuala Lumpur",
+    desc: "Mock donor 'Sara, 22', first donation. She completed the donor form and asks what happens during eligibility screening.",
+    q: "Which finding should temporarily defer this donor?",
+    options: ["Haemoglobin just below the donation cutoff", "Drank water before arriving", "Filled in the donor form honestly"],
+    correct: 0,
+    why: "A haemoglobin below the cutoff means the donor is deferred temporarily and advised to rebook — a standard eligibility outcome."
+  },
+  {
+    tag: "Scenario 2 · Penang",
+    title: "Blood unit sent to a Penang lab",
+    desc: "A whole blood unit (ref TRAIN-MY-0007, fictional) arrives at a processing lab in Penang for component separation.",
+    q: "What is the correct first processing step?",
+    options: ["Label and store the unit before separating it", "Centrifuge to separate into components", "Discard the buffy coat and freeze everything"],
+    correct: 1,
+    why: "Whole blood is centrifuged first to separate red cells, plasma and buffy coat; labelling follows component separation."
+  },
+  {
+    tag: "Scenario 3 · Johor",
+    title: "Transfusion request from a Johor ward",
+    desc: "Ward staff in a Johor hospital send a sample for a mock patient needing 2 units of red cells before surgery.",
+    q: "What must the lab confirm before issuing the units?",
+    options: ["Ward bed number only", "Donor's travel history", "Patient ABO/Rh group and a compatible crossmatch"],
+    correct: 2,
+    why: "Pre-transfusion testing always confirms the patient's ABO/Rh group and a compatible crossmatch before release."
+  }
+];
+
+const list = document.getElementById("scenarioList");
+scenarios.forEach((s, i) => {
+  const el = document.createElement("div");
+  el.className = "scenario";
+  el.innerHTML =
+    '<span class="tag">' + s.tag + '</span>' +
+    '<h4>' + s.title + '</h4>' +
+    '<p>' + s.desc + '</p>' +
+    '<p class="q">' + s.q + '</p>' +
+    '<div class="choices">' + s.options.map((o, j) =>
+      '<button class="choice" data-s="' + i + '" data-o="' + j + '">' + o + '</button>').join('') +
+    '</div>' +
+    '<div class="feedback" id="fb-S' + i + '"></div>';
+  list.appendChild(el);
+});
+
+/* ---------- Feature 3: Quick feedback ---------- */
+function showFeedback(id, ok, text) {
+  const fb = document.getElementById(id);
+  fb.className = "feedback show " + (ok ? "ok" : "no");
+  fb.textContent = (ok ? "✔ Correct — " : "✘ Not quite — ") + text;
+}
+
+document.addEventListener("click", (e) => {
+  const c = e.target.closest(".choice");
+  if (!c || c.disabled) return;
+
+  // Scenario card answers
+  if (c.dataset.s !== undefined) {
+    const i = +c.dataset.s, o = +c.dataset.o;
+    const card = c.closest(".scenario");
+    card.querySelectorAll(".choice").forEach(b => { b.disabled = true; });
+    c.classList.add(o === scenarios[i].correct ? "correct" : "wrong");
+    if (o !== scenarios[i].correct) {
+      const right = card.querySelectorAll(".choice")[scenarios[i].correct];
+      right.classList.add("correct");
+    }
+    showFeedback("fb-S" + i, o === scenarios[i].correct,
+      o === scenarios[i].correct ? scenarios[i].why
+        : "The correct answer is highlighted. " + scenarios[i].why);
+    return;
+  }
+
+  // Stage 2 / 3 checkpoint answers
+  if (c.dataset.ok !== undefined) {
+    const group = c.closest(".choices");
+    group.querySelectorAll(".choice").forEach(b => { b.disabled = true; });
+    const ok = c.dataset.ok === "0";
+    c.classList.add(ok ? "correct" : "wrong");
+    if (!ok) group.querySelector('[data-ok="0"]').classList.add("correct");
+    showFeedback(c.closest(".card").querySelector(".feedback").id, ok,
+      ok ? "Good choice — that is the correct step in the workflow."
+         : "That is not the right step here. The correct option is highlighted above.");
+    return;
+  }
+});
+
+/* ---------- Feature 1: Step-by-step practice (Stage 1) ---------- */
+const stepDetails = [
+  {
+    instruction: "Donor registration: check the mock donor's identity, have them complete the donor questionnaire, and assign a registration number. Try it: our mock donor 'Sara, 22' has just arrived at the registration desk.",
+    done: "Registration complete. Donor record opened (fictional ref: DON-2026-0148). Questionnaire received and identity verified against a mock ID."
+  },
+  {
+    instruction: "Eligibility screening: review the questionnaire answers, check haemoglobin (mock result: pass), weight, and recent health and travel history. Decide: accept, defer temporarily, or defer permanently?",
+    done: "Screening passed. Mock haemoglobin result is acceptable, weight and history are within criteria — donor accepted for a mock 450 mL whole blood donation."
+  },
+  {
+    instruction: "Mock collection: clean the venepuncture site, collect the unit into the anticoagulant bag, mix gently, label the bag and tubes, and give the donor aftercare advice.",
+    done: "Collection complete (simulation). Unit TRAIN-MY-0001 labelled and signed off. The unit is now ready for Stage 2 — component processing."
+  }
+];
+// Each step: first click shows the instruction, second click marks it done
+// and unlocks the next step. Steps must be done in order.
+const state = stepDetails.map(() => "locked"); // locked | shown | done
+
+document.querySelectorAll("#steps1 .step-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const idx = +btn.dataset.step;
+    const result = btn.closest(".step-row").querySelector(".step-result");
+    if (state[idx] === "locked") {
+      if (idx > 0 && state[idx - 1] !== "done") return; // earlier steps first
+      state[idx] = "shown";
+      result.textContent = stepDetails[idx].instruction;
+      result.classList.remove("locked");
+      btn.classList.add("active");
+    } else if (state[idx] === "shown") {
+      state[idx] = "done";
+      result.textContent = stepDetails[idx].done;
+      btn.classList.remove("active");
+      btn.classList.add("done");
+      btn.textContent = "✓";
+    }
+  });
+});
+</script>
+</body>
+</html>
