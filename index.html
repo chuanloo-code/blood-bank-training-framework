@@ -6,174 +6,265 @@
 <title>Blood Bank Training Framework</title>
 <style>
   :root{
-    --blue:#2563eb; --blue-deep:#1e40af; --blue-soft:#eff6ff; --blue-mid:#bfdbfe;
-    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
-    --green:#059669; --green-bg:#ecfdf5; --red:#dc2626; --red-bg:#fef2f2;
-    --amber:#d97706; --amber-bg:#fffbeb;
-    --s1:#ef4444; --s1-bg:#fef2f2;      /* procurement — red */
-    --s2:#8b5cf6; --s2-bg:#f5f3ff;      /* processing — violet */
-    --s3:#0ea5e9; --s3-bg:#f0f9ff;      /* transfusion — sky */
-    --radius:14px;
+    --coral:#f96e6e; --coral-deep:#ef5350; --coral-soft:#fdeaea;
+    --navy:#2e3d4f; --navy-soft:#5b6b7d;
+    --sky:#e9f4fc; --sky-deep:#d5ecfa;
+    --ink:#2e3d4f; --muted:#7a8a9a; --line:#e3ebf2;
+    --green:#2e9e6b; --green-bg:#e9f9f1; --red:#d84a4a; --red-bg:#fdeeee;
+    --radius:16px;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
   body{
     font-family:"Segoe UI", Arial, sans-serif; color:var(--ink);
-    line-height:1.55; font-size:15px;
+    line-height:1.55; font-size:15px; background:#f4f9fd;
+  }
+
+  /* ===== Hero (flat pastel blob style) ===== */
+  .hero-outer{
     background:
-      radial-gradient(1200px 500px at 85% -100px, rgba(37,99,235,.10), transparent 60%),
-      radial-gradient(900px 400px at -100px 500px, rgba(139,92,246,.08), transparent 60%),
-      #f6f8fc;
+      radial-gradient(1400px 700px at 110% -200px, #cfe9fa 0%, transparent 55%),
+      radial-gradient(1100px 600px at -150px -100px, #dcedfb 0%, transparent 50%),
+      linear-gradient(180deg, var(--sky) 0%, #f4f9fd 100%);
   }
-  /* ===== Hero ===== */
-  header{
-    position:relative; overflow:hidden;
-    background:linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
-    color:#fff; padding:56px 24px 108px;
+  header{max-width:1120px; margin:0 auto; padding:26px 24px 0;}
+  nav{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    padding:6px 4px;
   }
-  header::after{
-    content:"🩸"; position:absolute; right:-30px; top:-40px; font-size:260px;
-    opacity:.08; transform:rotate(-12deg);
+  .logo{display:flex; align-items:center; gap:10px; font-weight:800; font-size:16px; color:var(--navy); letter-spacing:.3px;}
+  .logo .drop{
+    width:34px; height:34px; background:var(--coral); border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg); display:flex; align-items:center; justify-content:center;
   }
-  header .wrap{max-width:1040px; margin:0 auto; position:relative; z-index:1;}
-  .kicker{
-    display:inline-flex; align-items:center; gap:8px;
-    background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3);
-    padding:5px 14px; border-radius:999px; font-size:12.5px; font-weight:600; letter-spacing:.4px;
-    text-transform:uppercase; margin-bottom:16px; backdrop-filter:blur(4px);
+  .logo .drop span{transform:rotate(45deg); font-size:16px;}
+  .nav-links{display:flex; gap:6px; flex-wrap:wrap;}
+  .nav-links a{
+    color:var(--navy-soft); text-decoration:none; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; transition:all .15s; letter-spacing:.5px;
   }
-  header h1{font-size:34px; font-weight:700; letter-spacing:-.5px; line-height:1.2;}
-  header h1 .accent{color:#93c5fd;}
-  header p.lede{color:#dbeafe; margin-top:12px; font-size:16px; max-width:640px;}
-  .hero-stats{display:flex; gap:12px; margin-top:26px; flex-wrap:wrap;}
-  .stat{
-    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25);
-    border-radius:12px; padding:10px 18px; backdrop-filter:blur(4px);
+  .nav-links a:hover{background:#fff; color:var(--coral); box-shadow:0 2px 8px rgba(46,61,79,.08);}
+
+  .hero{
+    display:grid; grid-template-columns:1.05fr .95fr; gap:20px; align-items:center;
+    background:#fff; border-radius:28px; margin-top:22px; padding:40px 44px;
+    box-shadow:0 14px 40px rgba(46,61,79,.10); position:relative; overflow:hidden;
   }
-  .stat b{display:block; font-size:18px;}
-  .stat span{font-size:12px; color:#bfdbfe;}
+  .hero::before{ /* soft blue blob corner like the template */
+    content:""; position:absolute; top:-140px; right:-140px; width:420px; height:420px;
+    background:radial-gradient(circle at 35% 35%, var(--sky-deep), rgba(213,236,250,0)); border-radius:50%;
+  }
+  .hero-copy{position:relative; z-index:1;}
+  .hero h1{font-size:42px; font-weight:800; letter-spacing:-.5px; line-height:1.08;}
+  .hero h1 .coral{color:var(--coral); text-transform:uppercase;}
+  .hero h1 .navy{color:var(--navy); text-transform:uppercase; display:block;}
+  .hero .tagline{margin-top:10px; color:var(--navy-soft); font-size:16px; font-weight:600;}
+  .hero .lede{margin-top:14px; color:var(--muted); font-size:14px; max-width:480px;}
+  .hero-actions{display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;}
+  .btn-coral{
+    background:var(--coral); color:#fff; border:none; border-radius:999px; padding:12px 30px;
+    font:inherit; font-weight:700; font-size:14px; cursor:pointer; letter-spacing:.8px;
+    box-shadow:0 8px 20px rgba(249,110,110,.35); transition:all .15s; text-decoration:none; display:inline-block;
+  }
+  .btn-coral:hover{background:var(--coral-deep); transform:translateY(-2px);}
+  .btn-ghost{
+    background:#fff; color:var(--navy); border:2px solid var(--line); border-radius:999px; padding:11px 26px;
+    font:inherit; font-weight:700; font-size:14px; cursor:pointer; letter-spacing:.8px; text-decoration:none; display:inline-block;
+    transition:all .15s;
+  }
+  .btn-ghost:hover{border-color:var(--navy);}
+  .hero-badges{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap;}
+  .badge-flat{
+    background:var(--sky); border-radius:10px; padding:8px 14px; font-size:12.5px; color:var(--navy);
+    font-weight:700;
+  }
+  .badge-flat b{color:var(--coral);}
+  .hero-art{position:relative; z-index:1; display:flex; justify-content:center;}
+
   /* ===== Layout ===== */
-  main{max-width:1040px; margin:-44px auto 0; padding:0 24px 40px; position:relative; z-index:2;}
-  section{margin-bottom:44px;}
-  .stage-head{display:flex; align-items:center; gap:14px; margin-bottom:6px;}
+  main{max-width:1120px; margin:0 auto; padding:34px 24px 30px;}
+  section{margin-bottom:48px;}
+  .stage-head{display:flex; align-items:center; gap:16px; margin-bottom:8px;}
   .stage-icon{
-    width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
-    font-size:26px; flex-shrink:0; box-shadow:0 6px 14px rgba(15,23,42,.12);
+    width:56px; height:56px; border-radius:18px; display:flex; align-items:center; justify-content:center;
+    font-size:26px; flex-shrink:0;
   }
-  .icon-scenarios{background:linear-gradient(135deg,#f59e0b,#f97316);}
-  .icon-s1{background:linear-gradient(135deg,#ef4444,#dc2626);}
-  .icon-s2{background:linear-gradient(135deg,#8b5cf6,#7c3aed);}
-  .icon-s3{background:linear-gradient(135deg,#0ea5e9,#0284c7);}
-  h2{font-size:21px; font-weight:700; letter-spacing:-.3px;}
-  .stage-sub{color:var(--muted); font-size:13.5px;}
-  .purpose{color:var(--muted); font-size:14px; margin:8px 0 18px; max-width:720px;}
+  .icon-scenarios{background:linear-gradient(135deg,#ffb26b,#ff9147); box-shadow:0 8px 18px rgba(255,145,71,.35);}
+  .icon-s1{background:linear-gradient(135deg,#ff8a8a,#f96e6e); box-shadow:0 8px 18px rgba(249,110,110,.35);}
+  .icon-s2{background:linear-gradient(135deg,#a3c6f0,#7da8e3); box-shadow:0 8px 18px rgba(125,168,227,.35);}
+  .icon-s3{background:linear-gradient(135deg,#7fd8c8,#4fbfa8); box-shadow:0 8px 18px rgba(79,191,168,.35);}
+  h2{font-size:21px; font-weight:800; letter-spacing:-.2px; color:var(--navy);}
+  .stage-sub{color:var(--navy-soft); font-size:13.5px; font-weight:600;}
+  .purpose{color:var(--muted); font-size:14px; margin:6px 0 18px; max-width:760px;}
   .card{
-    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px;
-    box-shadow:0 4px 16px rgba(15,23,42,.06); margin-bottom:16px;
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:22px;
+    box-shadow:0 6px 18px rgba(46,61,79,.06); margin-bottom:16px;
   }
-  .card h3{font-size:15.5px; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .card h3{font-size:15.5px; font-weight:800; margin-bottom:6px; color:var(--navy); display:flex; align-items:center; gap:8px;}
   .card .sub{color:var(--muted); font-size:13.5px;}
-  /* section accent bars */
-  #scenarios-section .card, .scenario{border-top:3px solid #f59e0b;}
-  #stage1 .card{border-top:3px solid var(--s1);}
-  #stage2 .card{border-top:3px solid var(--s2);}
-  #stage3 .card{border-top:3px solid var(--s3);}
+  /* pastel accent bars per section */
+  #scenarios-section .card, .scenario{border-top:4px solid #ffb26b;}
+  #stage1 .card{border-top:4px solid var(--coral);}
+  #stage2 .card{border-top:4px solid #7da8e3;}
+  #stage3 .card{border-top:4px solid #4fbfa8;}
+
   /* ===== Scenario cards ===== */
-  .scenarios{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:16px; margin-bottom:8px;}
+  .scenarios{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:16px;}
   .scenario{
-    border:1px solid var(--line); border-radius:var(--radius); padding:18px; cursor:default;
+    border:1px solid var(--line); border-radius:var(--radius); padding:20px; cursor:default;
     background:#fff; text-align:left; font:inherit; display:block; width:100%;
-    transition:transform .15s, box-shadow .15s; box-shadow:0 2px 8px rgba(15,23,42,.05);
+    transition:transform .15s, box-shadow .15s; box-shadow:0 4px 12px rgba(46,61,79,.06);
   }
-  .scenario:hover{transform:translateY(-3px); box-shadow:0 10px 24px rgba(15,23,42,.12);}
+  .scenario:hover{transform:translateY(-4px); box-shadow:0 12px 26px rgba(46,61,79,.13);}
   .scenario .tag{
     display:inline-flex; align-items:center; gap:6px;
-    background:linear-gradient(135deg,#fff7ed,#ffedd5); color:#c2410c; font-size:11.5px;
-    font-weight:700; padding:4px 12px; border-radius:999px; border:1px solid #fed7aa; margin-bottom:10px;
+    background:linear-gradient(135deg,#fff2e3,#ffe7cf); color:#c96a1f; font-size:11.5px;
+    font-weight:800; padding:5px 14px; border-radius:999px; border:1px solid #ffd9ad; margin-bottom:12px;
+    letter-spacing:.4px;
   }
-  .scenario h4{font-size:15px; margin-bottom:6px; font-weight:700;}
+  .scenario h4{font-size:15px; margin-bottom:6px; font-weight:800; color:var(--navy);}
   .scenario p{font-size:13.5px; color:var(--muted);}
-  .scenario .q{margin-top:12px; font-size:13.5px; color:var(--ink); font-weight:600;}
+  .scenario .q{margin-top:12px; font-size:13.5px; color:var(--navy); font-weight:700;}
+
   /* ===== Choices & feedback ===== */
   .choices{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
   .choice{
-    border:1.5px solid var(--line); background:#fff; border-radius:10px; padding:10px 16px;
-    cursor:pointer; font:inherit; font-size:13.5px; transition:all .15s;
+    border:2px solid var(--line); background:#fff; border-radius:12px; padding:10px 16px;
+    cursor:pointer; font:inherit; font-size:13.5px; color:var(--ink); transition:all .15s;
   }
-  .choice:hover:not(:disabled){border-color:var(--blue); background:var(--blue-soft); transform:translateY(-1px);}
+  .choice:hover:not(:disabled){border-color:var(--coral); background:var(--coral-soft); transform:translateY(-1px);}
   .choice:disabled{cursor:default; opacity:.72;}
-  .choice.correct{background:var(--green-bg); border-color:var(--green); color:var(--green); font-weight:700; opacity:1;}
+  .choice.correct{background:var(--green-bg); border-color:var(--green); color:var(--green); font-weight:800; opacity:1;}
   .choice.wrong{background:var(--red-bg); border-color:var(--red); color:var(--red); opacity:1;}
-  .feedback{margin-top:12px; border-radius:10px; padding:12px 14px; font-size:13.5px; display:none; line-height:1.5;}
+  .feedback{margin-top:12px; border-radius:12px; padding:12px 16px; font-size:13.5px; display:none; line-height:1.5; font-weight:600;}
   .feedback.show{display:flex; gap:8px; align-items:flex-start;}
   .feedback::before{font-size:16px;}
-  .feedback.ok{background:var(--green-bg); border:1px solid #a7f3d0; color:#065f46;}
+  .feedback.ok{background:var(--green-bg); border:1px solid #b5e8d2; color:#1d6b48;}
   .feedback.ok::before{content:"✅";}
-  .feedback.no{background:var(--red-bg); border:1px solid #fecaca; color:#7f1d1d;}
+  .feedback.no{background:var(--red-bg); border:1px solid #f5c2c2; color:#8f2f2f;}
   .feedback.no::before{content:"❌";}
+
   /* ===== Stage 1 timeline ===== */
-  .step-row{display:flex; gap:16px; position:relative; padding-bottom:22px;}
+  .step-row{display:flex; gap:16px; position:relative; padding-bottom:24px;}
   .step-row:not(:last-child)::before{
-    content:""; position:absolute; left:23px; top:52px; bottom:0; width:3px; border-radius:2px;
-    background:linear-gradient(var(--s1), #fecaca);
+    content:""; position:absolute; left:25px; top:56px; bottom:0; width:3px; border-radius:2px;
+    background:linear-gradient(var(--coral), #ffc9c9);
   }
   .step-btn{
-    flex-shrink:0; width:48px; height:48px; border-radius:14px; border:2px solid #fecaca;
-    background:#fff; color:var(--s1); font-weight:800; cursor:pointer; font-size:18px;
-    transition:all .15s; box-shadow:0 3px 8px rgba(239,68,68,.15);
+    flex-shrink:0; width:52px; height:52px; border-radius:16px; border:2px solid #ffc9c9;
+    background:#fff; color:var(--coral); font-weight:800; cursor:pointer; font-size:19px;
+    transition:all .15s; box-shadow:0 4px 10px rgba(249,110,110,.18);
   }
-  .step-btn:hover{background:var(--s1-bg); transform:scale(1.06);}
-  .step-btn.active{background:var(--s1); border-color:var(--s1); color:#fff;}
+  .step-btn:hover{background:var(--coral-soft); transform:scale(1.07);}
+  .step-btn.active{background:var(--coral); border-color:var(--coral); color:#fff;}
   .step-btn.done{background:var(--green-bg); border-color:var(--green); color:var(--green);}
-  .step-title{font-weight:700; font-size:14.5px; padding-top:13px;}
+  .step-title{font-weight:800; font-size:14.5px; padding-top:15px; color:var(--navy);}
   .step-result{
-    margin-top:10px; background:var(--s1-bg); border:1px solid #fecaca;
-    border-radius:10px; padding:12px 14px; font-size:13.5px; max-width:720px;
+    margin-top:10px; background:var(--coral-soft); border:1px solid #ffd4d4;
+    border-radius:12px; padding:12px 16px; font-size:13.5px; max-width:740px;
   }
-  .step-result.locked{color:var(--muted); font-style:italic; background:#f8fafc; border-color:var(--line);}
+  .step-result.locked{color:var(--muted); font-style:italic; background:#f7fafc; border-color:var(--line);}
+
   /* ===== Sample unit panel (Stage 2) ===== */
   .unit-panel{
-    background:linear-gradient(135deg, var(--s2-bg), #fff); border:1px solid #ddd6fe;
-    border-radius:var(--radius); padding:18px 20px; margin-bottom:16px;
-    display:flex; gap:16px; align-items:flex-start;
+    background:linear-gradient(135deg,#eef5fd,#fff); border:1px solid #cfe2f5;
+    border-radius:var(--radius); padding:20px 22px; margin-bottom:16px;
+    display:flex; gap:18px; align-items:flex-start;
   }
   .unit-badge{
-    width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#dc2626,#ef4444);
+    width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#f96e6e,#ef5350);
     color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800;
-    font-size:13px; flex-shrink:0; box-shadow:0 6px 14px rgba(220,38,38,.3); border:3px solid #fff;
+    font-size:13px; flex-shrink:0; box-shadow:0 8px 18px rgba(239,83,80,.35); border:4px solid #fff;
   }
   .unit-meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
   .chip{
-    background:#fff; border:1px solid var(--line); border-radius:999px; padding:4px 12px;
-    font-size:12px; color:var(--muted); font-weight:600;
+    background:var(--sky); border:1px solid var(--sky-deep); border-radius:999px; padding:5px 13px;
+    font-size:12px; color:var(--navy-soft); font-weight:600;
   }
-  .chip b{color:var(--ink);}
-  .note{font-size:12.5px; color:var(--muted); margin-top:10px;}
-  .divider{height:1px; background:linear-gradient(90deg, transparent, var(--line), transparent); margin:16px 0;}
+  .chip b{color:var(--navy);}
+  .note{font-size:12.5px; color:var(--muted); margin-top:12px;}
+
   footer{
-    max-width:1040px; margin:0 auto; padding:0 24px 40px; color:var(--muted); font-size:12.5px;
-    text-align:center;
+    max-width:1120px; margin:0 auto; padding:0 24px 44px; color:var(--muted); font-size:12.5px; text-align:center;
   }
   footer .foot-card{
-    background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 20px;
-    box-shadow:0 2px 8px rgba(15,23,42,.05);
+    background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 22px;
+    box-shadow:0 4px 12px rgba(46,61,79,.06);
+  }
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr; padding:30px 26px;}
+    .hero-art{order:-1;}
+    .hero h1{font-size:32px;}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <span class="kicker">🩸 Simulation · No real patient data</span>
-    <h1>Blood Bank <span class="accent">Training Framework</span></h1>
-    <p class="lede">Master blood bank workflows without a hospital visit — from the donor chair to the transfusion lab, in three interactive stages built for biomedical science students.</p>
-    <div class="hero-stats">
-      <div class="stat"><b>3</b><span>Training stages</span></div>
-      <div class="stat"><b>3</b><span>Malaysia scenarios</span></div>
-      <div class="stat"><b>9</b><span>Practice checkpoints</span></div>
+<div class="hero-outer">
+  <header>
+    <nav>
+      <div class="logo"><span class="drop"><span>🩸</span></span> BLOOD BANK TRAINING</div>
+      <div class="nav-links">
+        <a href="#scenarios-section">SCENARIOS</a>
+        <a href="#stage1">STAGE 1</a>
+        <a href="#stage2">STAGE 2</a>
+        <a href="#stage3">STAGE 3</a>
+      </div>
+    </nav>
+
+    <div class="hero">
+      <div class="hero-copy">
+        <h1><span class="coral">Blood Bank</span><span class="navy">Training Framework</span></h1>
+        <div class="tagline">Practice without the hospital visit</div>
+        <p class="lede">Three interactive simulation stages for biomedical science students — donor procurement, component processing, and pre-transfusion lab testing. All data is fictional sample data.</p>
+        <div class="hero-actions">
+          <a class="btn-coral" href="#scenarios-section">START PRACTICE</a>
+          <a class="btn-ghost" href="#stage1">JUMP TO STAGE 1</a>
+        </div>
+        <div class="hero-badges">
+          <span class="badge-flat"><b>3</b> Training stages</span>
+          <span class="badge-flat"><b>3</b> Malaysia scenarios</span>
+          <span class="badge-flat"><b>9</b> Checkpoints</span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <!-- flat illustration: blood bag, droplet, heart, syringe -->
+        <svg width="330" height="270" viewBox="0 0 330 270" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- connector tube -->
+          <path d="M150 90 C 200 120, 210 170, 165 200" stroke="#a9cdef" stroke-width="7" stroke-linecap="round" fill="none"/>
+          <!-- clipboard -->
+          <rect x="18" y="24" width="92" height="118" rx="10" fill="#b9d9f2"/>
+          <rect x="18" y="24" width="92" height="118" rx="10" fill="#cfe6f7"/>
+          <rect x="48" y="14" width="32" height="18" rx="6" fill="#2e3d4f"/>
+          <rect x="30" y="46" width="20" height="7" rx="3.5" fill="#ffffff"/>
+          <rect x="30" y="66" width="52" height="7" rx="3.5" fill="#ffffff"/>
+          <rect x="30" y="86" width="44" height="7" rx="3.5" fill="#ffffff"/>
+          <rect x="30" y="106" width="56" height="7" rx="3.5" fill="#ffffff"/>
+          <!-- heart + pulse -->
+          <path d="M150 32 C 138 12, 104 16, 104 46 C 104 70, 134 88, 150 100 C 166 88, 196 70, 196 46 C 196 16, 162 12, 150 32 Z" fill="#f96e6e"/>
+          <path d="M118 58 h16 l6 -12 8 24 6 -12 h18" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- blood bag -->
+          <rect x="128" y="128" width="72" height="96" rx="14" fill="#e9f4fc" stroke="#a9cdef" stroke-width="3"/>
+          <path d="M132 168 a32 22 0 0 0 64 0 v20 a14 14 0 0 1 -14 14 h-36 a14 14 0 0 1 -14 -14 Z" fill="#f96e6e"/>
+          <rect x="150" y="112" width="28" height="16" rx="6" fill="#2e3d4f"/>
+          <rect x="158" y="224" width="12" height="10" fill="#a9cdef"/>
+          <!-- syringe -->
+          <g transform="rotate(40 268 60)">
+            <rect x="238" y="50" width="64" height="22" rx="8" fill="#cfe6f7" stroke="#a9cdef" stroke-width="3"/>
+            <rect x="244" y="55" width="20" height="12" rx="4" fill="#f96e6e"/>
+            <rect x="302" y="55" width="10" height="12" fill="#a9cdef"/>
+            <rect x="312" y="58" width="18" height="6" rx="3" fill="#7da8e3"/>
+            <rect x="224" y="55" width="14" height="12" rx="5" fill="#2e3d4f"/>
+          </g>
+          <!-- droplet -->
+          <path d="M285 190 C 273 168, 250 172, 250 196 C 250 212, 268 224, 285 236 C 302 224, 320 212, 320 196 C 320 172, 297 168, 285 190 Z" fill="#7da8e3" opacity=".85"/>
+          <!-- ground -->
+          <ellipse cx="170" cy="252" rx="150" ry="14" fill="#d5ecfa"/>
+        </svg>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
+</div>
 
 <main>
 
